@@ -1,41 +1,82 @@
 # FastMCP Documentation Search Server 🚀
 
-Este projeto é um servidor MCP (Model Context Protocol) construído com **FastMCP** que inclui uma ferramenta de busca inteligente para a documentação do repositório FastMCP.
+Este projeto é um servidor **MCP (Model Context Protocol)** de última geração, construído com **FastMCP**. Ele implementa o que chamamos de **Arquitetura do Acesso + Contexto**, focando em fornecer infraestrutura para que Agentes de IA acessem informações técnicas com precisão cirúrgica e custo zero de tokens de processamento local.
 
-## 📋 Funcionalidades
+---
 
-- **`search_docs(query)`**: Ferramenta de busca que utiliza TF-IDF (via `minsearch`) para encontrar os 5 documentos mais relevantes dentro da documentação do FastMCP (`.md` e `.mdx`).
-- **`add(a, b)`**: Ferramenta simples para somar dois números.
-- **`hash_text(text)`**: Gera um hash SHA-256 de um texto.
-- **`scrape_page(url)`**: Extrai o conteúdo de uma página web utilizando o Jina Reader.
+## � O Que Este Servidor Resolve?
 
-## 🛠️ Tecnologias Utilizadas
+Diferente de sistemas que entopem o contexto da IA com dados desnecessários, este servidor foca no **Just-In-Time Context**. Ele permite que a IA "pergunte" e "valide" informações antes de responder ao usuário, eliminando alucinações técnicas.
 
-- **FastMCP**: Framework para criação rápida de servidores MCP.
-- **minsearch**: Mecanismo de busca minimalista baseado em TF-IDF.
-- **Scikit-learn & Pandas**: Para processamento de texto e vetores.
-- **Requests & Zipfile**: Para manipulação de dados externos e arquivos.
+**Diferencial Crítico:** Esta aplicação **não utiliza APIs de LLM**. Ela é uma infraestrutura de dados e ferramentas que atua como o "sistema nervoso periférico" do modelo (como Claude ou GPT), garantindo segurança, privacidade e baixo custo.
+
+---
+
+## 🛠️ Ferramentas Disponíveis (Tools)
+
+- **`search_docs(query)`**: Utiliza o motor **minsearch** com indexação **TF-IDF** para encontrar os 5 documentos mais relevantes dentro da documentação do FastMCP (`.md` e `.mdx`).
+- **`scrape_page(url)`**: Extrai e limpa o conteúdo de páginas web via **Jina Reader**, entregando apenas o Markdown essencial para a IA.
+- **`hash_text(text)`**: Gera um hash SHA-256 local, garantindo integridade de dados sem sair da sua infraestrutura.
+- **`add(a, b)`**: Execução lógica pura para cálculos matemáticos precisos, evitando erros de raciocínio do modelo.
+
+---
+
+## 🏗️ Arquitetura e Funcionamento
+
+A arquitetura segue um fluxo de "Smart Data" em vez de "Big Data":
+
+1. **User Request**: O usuário faz uma pergunta técnica.
+2. **LLM Client**: O modelo (ex: Claude) identifica a necessidade de dados externos.
+3. **MCP Protocol**: Uma ponte bidirecional conecta o cérebro (LLM) aos músculos (Seu Servidor).
+4. **FastMCP Server**: Executa a lógica local (Search, Scraping, Math).
+5. **Context Injection**: Apenas a informação lapidada volta para o modelo.
+
+### Diagrama de Fluxo Mermaird:
+
+```mermaid
+graph LR
+    User((Usuário)) --> Client[AI/LLM Client]
+    
+    subgraph "Camada de Protocolo"
+        Client <==> Protocol(MCP Protocol)
+    end
+    
+    subgraph "FastMCP Server (Sua Infra)"
+        Protocol <==> Tools{Tools Engine}
+        Tools --> Index[minsearch / TF-IDF]
+        Tools --> Scraping[Jina Reader]
+        Tools --> Logic[Hash / Math Logic]
+    end
+    
+    Index --- Docs[(Local Docs)]
+    Scraping --- Web((Web))
+```
+
+---
+
+## � Tech Stack
+
+- **FastMCP**: Framework para orquestração rápida de protocolos MCP.
+- **minsearch**: Mecanismo de busca minimalista e extremamente eficiente.
+- **Scikit-learn & Pandas**: Processamento vetorial e manipulação de dados estruturados.
+- **Requests & Zipfile**: Gerenciamento de arquivos e aquisição de dados web.
+
+---
 
 ## 🚀 Como Executar
 
 ### Pré-requisitos
 - Python 3.13+
-- [uv](https://github.com/astral-sh/uv) (recomendado)
+- [uv](https://github.com/astral-sh/uv)
 
-### Instalação
-1. Certifique-se de que as dependências estão instaladas:
-   ```bash
-   uv sync
-   ```
-
-### Execução Local
-Para rodar o servidor em modo de desenvolvimento:
+### Instalação e Execução Local
 ```bash
+uv sync
 uv run python main.py
 ```
 
-### Uso no Claude Desktop
-Adicione a seguinte configuração ao seu arquivo `claude_desktop_config.json`:
+### Configuração no Claude Desktop
+Adicione ao seu `claude_desktop_config.json`:
 
 ```json
 {
@@ -44,7 +85,7 @@ Adicione a seguinte configuração ao seu arquivo `claude_desktop_config.json`:
       "command": "uv",
       "args": [
         "--directory",
-        "C:/Users/UNIVERSO/OneDrive/Desktop/AI Dev Bootcamp/MCP lesson3/mcp-server",
+        "SUA_PASTA_DO_PROJETO",
         "run",
         "python",
         "main.py"
@@ -54,73 +95,6 @@ Adicione a seguinte configuração ao seu arquivo `claude_desktop_config.json`:
 }
 ```
 
-## 🔍 Como funciona a busca
-O servidor indexa automaticamente o arquivo `fastmcp.zip`. Ele percorre todos os arquivos Markdown, remove os prefixos de diretório raiz para limpeza dos nomes e cria um índice vetorial em memória para consultas rápidas de alta relevância.
-
 ---
----
-*Desenvolvido como parte do AI Dev Bootcamp.*
+*Desenvolvido como parte do AI Dev Bootcamp por um Engenheiro de IA e Cientista de Dados.*
 
----
-
-# FastMCP Documentation Search Server 🚀
-
-This project is an MCP (Model Context Protocol) server built with **FastMCP** that includes an intelligent search tool for the FastMCP repository documentation.
-
-## 📋 Features
-
-- **`search_docs(query)`**: Search tool that uses TF-IDF (via `minsearch`) to find the 5 most relevant documents within the FastMCP documentation (`.md` and `.mdx`).
-- **`add(a, b)`**: Simple tool to add two numbers.
-- **`hash_text(text)`**: Generates a SHA-256 hash of a string.
-- **`scrape_page(url)`**: Extracts content from a web page using Jina Reader.
-
-## 🛠️ Tech Stack
-
-- **FastMCP**: Framework for fast MCP server creation.
-- **minsearch**: Minimalist search engine based on TF-IDF.
-- **Scikit-learn & Pandas**: For text processing and vectorization.
-- **Requests & Zipfile**: For handling external data and archives.
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Python 3.13+
-- [uv](https://github.com/astral-sh/uv) (recommended)
-
-### Installation
-1. Ensure dependencies are installed:
-   ```bash
-   uv sync
-   ```
-
-### Running Locally
-To run the server in development mode:
-```bash
-uv run python main.py
-```
-
-### Usage in Claude Desktop
-Add the following configuration to your `claude_desktop_config.json` file:
-
-```json
-{
-  "mcpServers": {
-    "fastmcp-search": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "C:/Users/UNIVERSO/OneDrive/Desktop/AI Dev Bootcamp/MCP lesson3/mcp-server",
-        "run",
-        "python",
-        "main.py"
-      ]
-    }
-  }
-}
-```
-
-## 🔍 How Search Works
-The server automatically indexes the `fastmcp.zip` file. It iterates through all Markdown files, removes root directory prefixes for path cleaning, and creates an in-memory vector index for high-relevance fast queries.
-
----
-*Developed as part of the AI Dev Bootcamp.*
