@@ -25,11 +25,10 @@ Diferente de sistemas que entopem o contexto da IA com dados desnecessários, es
 
 A arquitetura segue um fluxo de "Smart Data" em vez de "Big Data":
 
-1. **User Request**: O usuário faz uma pergunta técnica.
-2. **LLM Client**: O modelo (ex: Claude) identifica a necessidade de dados externos.
-3. **MCP Protocol**: Uma ponte bidirecional conecta o cérebro (LLM) aos músculos (Seu Servidor).
-4. **FastMCP Server**: Executa a lógica local (Search, Scraping, Math).
-5. **Context Injection**: Apenas a informação lapidada volta para o modelo.
+1. **User Request**: O usuário faz uma pergunta técnica via Client (ex: Claude Desktop).
+2. **MCP Protocol**: Uma ponte bidirecional conecta o cérebro (LLM) aos músculos (Seu Servidor).
+3. **FastMCP Server**: Executa a lógica local e independente (Search, Scraping, Math).
+4. **Context Injection**: Apenas a informação lapidada volta para o modelo.
 
 ### Diagrama de Fluxo Mermaird:
 
